@@ -23,3 +23,13 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('register', (firstName, lastName, password) => {
+        cy.get('#first-name').type(firstName);
+        cy.get('#last-name').type(lastName);
+        cy.get('#email').type(firstName + Cypress._.random(0, 1e6) + '@email.com');
+        cy.get('#password').type(password);
+        cy.get('#password-confirmation').type(password);
+        cy.get('input[type="checkbox"]').click();
+        cy.contains('Submit').click();
+  });

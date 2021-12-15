@@ -4,7 +4,7 @@ describe('login test', () => {
         cy.visit("/");
         cy.get('a[href="/login"]').click();
         cy.url().should('include', 'vivifyideas');
-    })
+    });
 
     xit('login without email address', () => {
         cy.get('#password').type('12345678');
@@ -35,7 +35,7 @@ describe('login test', () => {
         cy.get('#password').type('1234567');
         cy.get('button[type="submit"]').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
-        .and('contain', 'Bad Credentials')
+          .and('contain', 'Bad Credentials')
     });
 
     it('login with empty space before password ', () => {
@@ -43,7 +43,7 @@ describe('login test', () => {
         cy.get('#password').type(' 12345678');
         cy.get('button[type="submit"]').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
-        .and('contain', 'Bad Credentials');
+          .and('contain', 'Bad Credentials');
     });
 
     xit('login without . in email ', () => {
@@ -51,10 +51,10 @@ describe('login test', () => {
         cy.get('#password').type('12345678');
         cy.get('button[type="submit"]').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
-        .and('contain', 'Bad Credentials');
+          .and('contain', 'Bad Credentials');
     });
 
-    xit('login with space before email', () => {
+    it('login with space before email', () => {
         cy.get('#email').type('  dragan1@gmail.com');
         cy.get('#password').type('12345678');
         cy.get('button[type="submit"]').click();
@@ -69,9 +69,19 @@ describe('login test', () => {
         cy.url().should('not.include', 'login');
         cy.get('a[role="button "]').should('be.visible');
     });
-    
+
     xit('logout', () => {
         cy.get('a[role="button "]').should('be.visible')
         cy.get('a[role="button "]').click();
     });
+
+    // xit('response has token type bearer', () => {
+    //     cy.request('POST', 'https://gallery-api.vivifyideas.com/api/auth/login', 
+    //       { "email": "dragan1@gmail.com", "password": "12345678" }).then((response) => {
+    //       expect(response.body).to.have.property('token_type', 'bearer')
+    //       expect(response.status).to.be.eq(200)
+    //       expect(response.body).to.have.property('access_token')
+    //     });
+    // });
+
 });
