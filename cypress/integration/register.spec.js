@@ -6,9 +6,10 @@ describe('registration test', () => {
         cy.visit("/");
         cy.get('a[href="/register"]').click();
         cy.url().should('include', 'register');
+        
     })
 
-    it.only('register without firstName', () => {
+    it('register without firstName', () => {
         cy.get('#last-name').type('Nikolic');
         cy.get('#email').type('nikola' + Cypress._.random(0, 1e6) + '@email.com');
         cy.get('#password').type('12345678');
@@ -16,6 +17,7 @@ describe('registration test', () => {
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
         cy.url().should('include', 'register');
+
     });
 
     it('register without lastName', () => {
@@ -26,6 +28,7 @@ describe('registration test', () => {
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
         cy.url().should('include', 'register');
+
     });
 
     it('register without email', () => {
@@ -36,6 +39,7 @@ describe('registration test', () => {
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
         cy.url().should('include', 'register');
+
     });
 
     it('register without password', () => {
@@ -46,6 +50,7 @@ describe('registration test', () => {
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
         cy.url().should('include', 'register');
+
     });
 
     it('register without password', () => {
@@ -56,6 +61,7 @@ describe('registration test', () => {
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
         cy.url().should('include', 'register');
+
     });
 
     it('register without terms', () => {
@@ -67,6 +73,7 @@ describe('registration test', () => {
         cy.contains('Submit').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
           .and('contain', 'The terms and conditions must be accepted.');
+
     });
 
     it('register without @ in email', () => {
@@ -78,6 +85,7 @@ describe('registration test', () => {
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
         cy.url().should('include', 'register');
+
     });
 
     it('register without . in email', () => {
@@ -89,6 +97,7 @@ describe('registration test', () => {
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
         cy.contains('The email must be a valid email address.').should('be.visible');
+
     });
 
     it('register with email form registred user', () => {
@@ -101,6 +110,7 @@ describe('registration test', () => {
         cy.contains('Submit').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
           .and('contain', 'The email has already been taken.');
+
     });
 
     it('register where the password not match password confirmation', () => {
@@ -113,6 +123,7 @@ describe('registration test', () => {
         cy.contains('Submit').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
           .and('contain', 'The password confirmation does not match.');
+
     });
 
     it('register where the password has less characters than recommended', () => {
@@ -125,6 +136,7 @@ describe('registration test', () => {
         cy.contains('Submit').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
           .and('contain', 'The password must be at least 8 characters.');
+
     });
 
     it('register with password which not contains digits', () => {
@@ -137,12 +149,14 @@ describe('registration test', () => {
         cy.contains('Submit').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
           .and('contain', 'The password format is invalid.');
+
     });
 
     it('register with valid credentials', () => {
         cy.register(firstName, lastName, password);
         cy.get('a[role="button "]').should('be.visible');
-        cy.get('#navbarTogglerDemo01').should('not.contain', 'Register');    
+        cy.get('#navbarTogglerDemo01').should('not.contain', 'Register'); 
+
     });
 
 });
