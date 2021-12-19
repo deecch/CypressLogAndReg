@@ -1,4 +1,5 @@
 import { firstName, lastName, password } from "../../config";
+import { utilities, Utilities } from "../page_objects/utilities";
 
 describe('registration test', () => {
 
@@ -71,7 +72,7 @@ describe('registration test', () => {
         cy.get('#password').type('12345678');
         cy.get('#password-confirmation').type('12345678');
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
+        utilities.validationRegisterPage.should('be.visible')
           .and('contain', 'The terms and conditions must be accepted.');
 
     });
@@ -96,7 +97,7 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('12345678');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.contains('The email must be a valid email address.').should('be.visible');
+        utilities.validatonMsgEmailValid.should('be.visible');
 
     });
 
@@ -108,7 +109,7 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('12345678');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
+        utilities.validationRegisterPage.should('be.visible')
           .and('contain', 'The email has already been taken.');
 
     });
@@ -121,7 +122,7 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('1234567');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
+        utilities.validationRegisterPage.should('be.visible')
           .and('contain', 'The password confirmation does not match.');
 
     });
@@ -134,7 +135,7 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('1234567');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
+        utilities.validationRegisterPage.should('be.visible')
           .and('contain', 'The password must be at least 8 characters.');
 
     });
@@ -147,7 +148,7 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('asdfghjk');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
+        utilities.validationRegisterPage.should('be.visible')
           .and('contain', 'The password format is invalid.');
 
     });
@@ -155,7 +156,7 @@ describe('registration test', () => {
     it('register with valid credentials', () => {
         cy.register(firstName, lastName, password);
         cy.get('a[role="button "]').should('be.visible');
-        cy.get('#navbarTogglerDemo01').should('not.contain', 'Register'); 
+        utilities.navTogglerSelector.should('not.contain', 'Register'); 
 
     });
 

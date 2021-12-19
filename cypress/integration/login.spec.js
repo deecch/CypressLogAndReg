@@ -70,16 +70,15 @@ describe('login test', () => {
 
     });
 
-    xit('login with valid credentials', () => {
+    it.only('login with valid credentials', () => {
         cy.get('#email').type('dragan1@gmail.com');
         cy.get('#password').type('12345678');
         cy.get('button[type="submit"]').click();
         cy.url().should('not.include', 'login');
         cy.get('a[role="button "]').should('be.visible');
-
     });
 
-    xit('logout', () => {
+    it('logout', () => {
         cy.get('a[role="button "]').should('be.visible')
         cy.get('a[role="button "]').click();
 
