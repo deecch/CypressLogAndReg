@@ -18,8 +18,8 @@ class CreateGallery {
         return cy.get('input[placeholder="image url"]') 
     }
 
-    get moreImage (number) {
-        for (let i = 1; i <= number; i++) {
+    get maxImages () {
+        for (let i = 1; i <= 3; i++) {
             this.addBtn.click()
             return cy.get('input[placeholder="image url"]').eq(i)
         }
@@ -44,11 +44,11 @@ class CreateGallery {
         this.submitBtn.click()
     }
 
-    createGalleryWithMoreImg(title, description, image, image2, number) {
+    createGalleryWithMoreImg(title, description, image, image2) {
         this.title.clear().type(title)
         this.description.clear().type(description)
         this.image.clear().type(image)
-        this.moreImage(number).clear().type(image2)
+        this.maxImages.clear().type(image2)
         this.submitBtn.click()
     }
 
