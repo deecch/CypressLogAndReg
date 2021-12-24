@@ -1,4 +1,3 @@
-
 const Locators = require('../fixtures/Locators.json');
 const faker = require("faker");
 
@@ -20,7 +19,7 @@ describe('login test', () => {
 
     });
 
-    it('login with invalid credentials', () => {
+    it.only('login with invalid credentials', () => {
         cy.get(Locators.LoginPage.email).clear().type(userData.randomEmail);
         cy.get(Locators.LoginPage.password).clear().type(userData.randomPass);
         cy.get(Locators.LoginPage.SubmitButton).click();

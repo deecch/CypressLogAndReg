@@ -34,12 +34,13 @@ describe('login test', () => {
 
     });
     
-    it('login with invalid password ', () => {
+    it.only('login with invalid password ', () => {
         cy.get('#email').type('dragan1@gmail.com');
         cy.get('#password').type('1234567');
         cy.get('button[type="submit"]').click();
         cy.get('p[class="alert alert-danger"]').should('be.visible')
           .and('contain', 'Bad Credentials')
+          .and('have.css', 'background-color', 'rgb(248, 215, 218)')
 
     });
 
@@ -76,6 +77,7 @@ describe('login test', () => {
         cy.get('button[type="submit"]').click();
         cy.url().should('not.include', 'login');
         cy.get('a[role="button "]').should('be.visible');
+        
     });
 
     it('logout', () => {

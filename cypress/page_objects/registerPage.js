@@ -9,7 +9,7 @@ class RegisterPage {
     }
 
     get emailField() {
-        cy.get('#email')
+        return cy.get('#email')
     }
 
     get passField() {
@@ -28,13 +28,37 @@ class RegisterPage {
         return cy.contains('Submit')
     }
 
+    get navTogglerSelector() {
+        return cy.get("#navbarTogglerDemo01");
+    
+    }
+
+    get validationRegisterPage() {
+        return cy.get('p[class="alert alert-danger"]');
+    }
+
+    getvalidationRegisterPage(index) {
+        return cy.get('p[class="alert alert-danger"]').eq(index);
+    }
+
     register(firstName, lastName, email, pass, passConfirmation) {
         this.firstNameField.clear().type(firstName)
         this.lastNameField.clear().type(lastName)
         this.emailField.clear().type(email)
         this.passField.clear().type(pass)
         this.passConfirmationField.clear().type(passConfirmation)
-        this.termsBox.click()
+        if (this.termsBox.uncheck()) {
+            this.termsBox.click()
+        }
+        this.submitBtn.click()
+    }
+
+    registerWithoutTerms(firstName, lastName, email, pass, passConfirmation) {
+        this.firstNameField.clear().type(firstName)
+        this.lastNameField.clear().type(lastName)
+        this.emailField.clear().type(email)
+        this.passField.clear().type(pass)
+        this.passConfirmationField.clear().type(passConfirmation)
         this.submitBtn.click()
     }
 

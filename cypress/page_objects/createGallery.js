@@ -1,5 +1,3 @@
-import { describe } from "mocha"
-
 class CreateGallery {
 
     get create () {
@@ -33,8 +31,24 @@ class CreateGallery {
         return cy.contains('Submit')
     }
 
-    getcancelBtn () {
+    get cancelBtn () {
         return cy.contains('Cancel')
+    }
+
+    get deleteBtn () {
+        return cy.get('i[class="fas fa-trash"]')
+    }
+
+    get upBtn () {
+        return cy.get('i[class="fas fa-chevron-circle-up"]')
+    }
+
+    get errorMsg () {
+        return cy.get('p[class="alert alert-danger"]')
+    }
+
+    get createGalleryTitle () {
+        return cy.get('h1').contains('Create Gallery')
     }
 
     createGalleryWithOneImg(title, description, image) {
