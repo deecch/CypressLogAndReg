@@ -1,15 +1,16 @@
-import { authLogin } from '../page_objects/authLogin';
 import { validEmail , password, title } from "../../config";
-import { header } from '../page_objects/header';
 import { allGalleries } from '../page_objects/allGalleries';
 
 describe('POM all galleries', () => {
 
+    let userData = {
+        title: 'Title',
+        comment: 'some comment'
+    }
+
     before(function(){
+        cy.loginViaBackend()
         cy.visit("/");
-        header.login.click()
-        authLogin.login(validEmail, password)
-        cy.url().should('not.include', 'login')
         
     })
     it('find all galleries with same name', () => {
@@ -29,12 +30,12 @@ describe('POM all galleries', () => {
         
     });
 
-    it.only('open gallery and send comment', () => {
-        allGalleries.galleryCard.contains(title).click()
-        allGalleries.commentField.type('ajskld')
+    it('open gallery and send comment', () => {
+        allGalleries.galleryCard.contains(userData.title).click()
+        allGalleries.commentField.type(userData.comment)
         allGalleries.submitBtn.click()
-        cy.get('li[class="list-group-item"]').should('contain', 'ajskld')
-        allGalleries.getAllGalleryTitle(title).should('be.visible')
+        allGalleries.commentBox.should('contain', userData.comment)
+        allGalleries.getAllGalleryTitle(userData.title).should('be.visible')
             .and('have.css', 'color', 'rgb(72, 73, 75)')
 
     });

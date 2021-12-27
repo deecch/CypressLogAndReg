@@ -143,7 +143,15 @@ describe('POM register', () => {
     });
 
     it.only('register with valid credentials', () => {
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/register'
+        }).as('register')
         registerPage.register(userData.randomName, userData.randomLastName, userData.randomEmail, userData.randomPass, userData.randomPass)
+        cy.wait('@register').then((interception) => { 
+            expect(interception.response.body.token_type).to.eq('bearer')
+            expect(interception.response.statusCode).to.eq(200)    
+        })
         cy.url().should('not.include', 'register');
         registerPage.navTogglerSelector.should('not.contain','Register')
         header.login.should('not.exist')

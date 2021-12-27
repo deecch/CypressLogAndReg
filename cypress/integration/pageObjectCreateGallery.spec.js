@@ -1,12 +1,14 @@
-import { createGallery, createGalley } from '../page_objects/createGallery';
-import { validEmail , password, title, space } from "../../config";
+import { createGallery } from '../page_objects/createGallery';
+import { title, space } from "../../config";
 const faker = require('faker');
-import { header } from '../page_objects/header';
-import { authLogin } from '../page_objects/authLogin';
 import { validationMsg } from "../fixtures/validationMsg.json";
 import { allGalleries } from '../page_objects/allGalleries';
 
 describe('POM create gallery', () => {
+
+    let galleryId = ''
+    let authToken = window.localStorage.getItem('token')
+    
 
     let userData = {
         randomTitle : faker.lorem.word(1),
@@ -14,15 +16,15 @@ describe('POM create gallery', () => {
         randomDescription : faker.lorem.words(20),
         randomDescription1 : faker.lorem.words(1001),
         randomImg : faker.image.imageUrl() + '.jpg',
-        randomImg1 : faker.image.imageUrl() + '.gif'
+        randomImg1 : faker.image.imageUrl() + '.gif',
+        comment: 'some comment'
     }
 
     before(function(){
-        cy.visit("/");
-        header.login.click()
-        authLogin.login(validEmail, password)
-        cy.url().should('not.include', 'login')
-        createGallery.create.click()
+        cy.loginViaBackend()
+        // cy.visit("/");
+        // cy.url().should('not.include', 'login')
+        // createGallery.create.click()
         
     })
     
@@ -30,9 +32,6 @@ describe('POM create gallery', () => {
         createGallery.createGalleryWithOneImg(space, space, space)
         createGallery.submitBtn.should('exist')
         createGallery.title.should('have.value', space)
-        createGallery.errorMsg.should('contain', validationMsg.msgWrongImgFormat)
-            .and('have.css', 'background-color', 'rgb(248, 215, 218)')
-            .and('have.length', 1)
         createGallery.createGalleryTitle.should('be.visible')
             .and('have.css', 'color', 'rgb(72, 73, 75)')
     
@@ -42,9 +41,6 @@ describe('POM create gallery', () => {
         cy.reload()
         createGallery.createGalleryWithOneImg(userData.randomTitle, userData.randomDescription, userData.randomImg)
         createGallery.errorMsg.should('contain', validationMsg.msgTitleLessChart)
-            .and('have.css', 'background-color', 'rgb(248, 215, 218)')
-            .and('have.length', 1)
-        createGallery.errorMsg.should('contain', validationMsg.msgWrongImgFormat)
             .and('have.css', 'background-color', 'rgb(248, 215, 218)')
             .and('have.length', 1)
         createGallery.createGalleryTitle.should('be.visible')
@@ -58,6 +54,8 @@ describe('POM create gallery', () => {
         createGallery.errorMsg.should('contain', validationMsg.msgTitleMoreChart)
             .and('have.css', 'background-color', 'rgb(248, 215, 218)')
             .and('have.length', 1)
+        createGallery.createGalleryTitle.should('be.visible')
+            .and('have.css', 'color', 'rgb(72, 73, 75)')
     
     });
 
@@ -65,9 +63,6 @@ describe('POM create gallery', () => {
         cy.reload()
         createGallery.createGalleryWithOneImg(title, userData.randomDescription1, userData.randomImg)
         createGallery.errorMsg.should('contain', validationMsg.msgDescriptionMoreChart)
-            .and('have.css', 'background-color', 'rgb(248, 215, 218)')
-            .and('have.length', 1)
-        createGallery.errorMsg.should('contain', validationMsg.msgWrongImgFormat)
             .and('have.css', 'background-color', 'rgb(248, 215, 218)')
             .and('have.length', 1)
         createGallery.createGalleryTitle.should('be.visible')
@@ -113,16 +108,63 @@ describe('POM create gallery', () => {
 
     it('create valid gallery with one image', () => {
         cy.reload()
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/galleries'
+        }).as('createGallery')
         createGallery.createGalleryWithOneImg(title, userData.randomDescription, userData.randomImg)
-        allGalleries.galleryCard.eq(0).should('contain', title)
+        cy.wait('@createGallery').then((interception) => {
+            //console.log(interception.response)
+            galleryId = interception.response.body.id
+            console.log(galleryId)
+        })
+        //allGalleries.galleryCard.eq(0).should('contain', title)
         allGalleries.loadMoreBtn.should('exist')
     
     });
 
+    it('visit, comment and delete specific gallery', () => {
+        cy.visit('/galleries/' + galleryId)
+        cy.url('/galleries/' + galleryId)
+        allGalleries.commentField.type(userData.comment)
+        allGalleries.submitBtn.click()
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/comments'
+        }).as('comment')
+        cy.wait('@comment').then((interception) => {
+            console.log(interception.response)
+            expect(interception.response.statusCode).eq(200)
+            expect(interception.response.body[0].body).to.have.string(userData.comment)
+        })
+        allGalleries.deleteBtn.click()
+        cy.url('/galleries/' + galleryId).should('not.exist')
+
+        //  drugo resenje preko backend-a
+        // cy.request({
+        //     method: 'POST',
+        //     url: 'https://gallery-api.vivifyideas.com/api/galleries',
+        //     headers: {
+        //         authorization: 'bearer ' + authToken
+        //     },
+        //     body: {
+        //         title: 'neki',
+        //         description: 'dsahda',
+        //         images: [
+        //             userData.randomImg
+        //         ]
+        //     }
+        //     }).its('body').then((response) => {
+        //         galleryId = response.id
+        // });
+        // console.log(galleryId)
+    });
+
     it('create valid gallery with more image', () => {
+        console.log(galleryId)
         createGallery.create.click()
         createGallery.createGalleryWithMoreImg(title, userData.randomDescription, userData.randomImg, userData.randomImg)
-        allGalleries.galleryCard.eq(0).should('have.value', title)
+        allGalleries.galleryCard.eq(0).should('contain', title)
         allGalleries.loadMoreBtn.should('exist')
     
     });

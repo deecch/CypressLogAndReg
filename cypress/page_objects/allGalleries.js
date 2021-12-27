@@ -28,8 +28,8 @@ class AllGalleries {
         return cy.contains('Load More')
     }
 
-    get commentField () {
-        return cy.get()
+    get commentBox () {
+        return cy.get('li[class="list-group-item"]')
     }
 
     get commentField () {
@@ -38,6 +38,10 @@ class AllGalleries {
 
     get submitBtn () {
         return cy.get('button').contains('Submit')
+    }
+
+    get deleteBtn () {
+        cy.get('button').contains('Delete Gallery')
     }
 
 }

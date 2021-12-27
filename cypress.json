@@ -1,3 +1,8 @@
 {
-    "baseUrl": "https://gallery-app.vivifyideas.com"
+    "baseUrl": "https://gallery-app.vivifyideas.com",
+    "video": false,
+    "env": {
+        "validUserMail": "dragan1@gmail.com",
+        "validUserPass": "12345678"
+    }
 }

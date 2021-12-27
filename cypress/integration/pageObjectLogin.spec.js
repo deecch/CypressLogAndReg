@@ -4,7 +4,10 @@ import { header } from '../page_objects/header';
 import { validEmail, validPassword, space, shortPass, invalidEmail } from "../../config";
 import { validationMsg } from "../fixtures/validationMsg.json";
 
+
 describe('POM login', () => {
+
+    let authToken = window.localStorage.getItem('token')
     
     let userData = {
         randomName: name.findName(),
@@ -13,9 +16,12 @@ describe('POM login', () => {
     }
 
     before('visit app', () => {
+        // odkomentarisati ako se koristi drugi nacin za logout
+        // cy.loginViaBackend()
         cy.visit("/");
         header.login.click();
         cy.url().should('contains', 'login');
+        
 
     });
 
@@ -105,8 +111,16 @@ describe('POM login', () => {
     });
 
     it('login with valid credentials', () => {
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/login'
+        }).as('login')
         authLogin.login(validEmail, validPassword)
-        cy.wait(3000)
+        cy.wait('@login').then((interception) => {
+            console.log(interception.response)
+            expect(interception.response.statusCode).eq(200)
+        })
+
         cy.url().should('not.include', 'login');
         header.logout.should('be.visible');
         authLogin.navTogglerSelector.should('exist')
@@ -115,10 +129,24 @@ describe('POM login', () => {
     }); 
 
     it('logout', () => {
+        cy.intercept({
+            method: "POST",
+            url: 'https://gallery-api.vivifyideas.com/api/auth/logout'
+        }).as('logout')
         header.logout.should('be.visible')
         header.logout.click();
+        cy.wait('@logout').then((interception) => {
+            expect(interception.response.statusCode).eq(200)
+            expect(interception.response.body.message).eq('Successfully logged out')
+        })
         authLogin.navTogglerSelector.should('not.contain', 'Logout')
             .and('not.contain', 'Create Gallery')
+        //  drugo resenje preko command.js-a, da bi radilo mora biti odkomentarisan login u before-u
+        // console.log(authToken)
+        // cy.logout(authToken).then((response) => {
+        //     expect(response.status).eq(200)
+        //     expect(response.body.message).eq('Successfully logged out')
+        // })
 
     });
 
