@@ -1,8 +1,10 @@
 import { firstName, lastName, password } from "../../config";
+import { registerPage } from "../page_objects/registerPage";
+import { validationMsg } from "../fixtures/validationMsg.json";
 
 describe('registration test', () => {
 
-    before(function(){
+    beforeEach(function(){
         cy.visit("/");
         cy.get('a[href="/register"]').click();
         cy.url().should('include', 'register');
@@ -53,17 +55,6 @@ describe('registration test', () => {
 
     });
 
-    it('register without password', () => {
-        cy.get('#first-name').type('Nikola');
-        cy.get('#last-name').type('Nikolic');
-        cy.get('#email').type('nikola' + Cypress._.random(0, 1e6) + '@email.com');
-        cy.get('#password').type('12345678');
-        cy.get('input[type="checkbox"]').click();
-        cy.contains('Submit').click();
-        cy.url().should('include', 'register');
-
-    });
-
     it('register without terms', () => {
         cy.get('#first-name').type('Nikola');
         cy.get('#last-name').type('Nikolic');
@@ -71,8 +62,8 @@ describe('registration test', () => {
         cy.get('#password').type('12345678');
         cy.get('#password-confirmation').type('12345678');
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
-          .and('contain', 'The terms and conditions must be accepted.');
+        registerPage.validationRegisterPage.should('be.visible')
+          .and('contain', validationMsg.msgTerms);
 
     });
 
@@ -96,11 +87,11 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('12345678');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.contains('The email must be a valid email address.').should('be.visible');
+        registerPage.validationRegisterPage.contains(validationMsg.msgEmailValid).should('be.visible');
 
     });
 
-    it('register with email form registred user', () => {
+    it('register with email from registred user', () => {
         cy.get('#first-name').type('Nikola');
         cy.get('#last-name').type('Nikolic');
         cy.get('#email').type('nikola@email.com');
@@ -108,8 +99,8 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('12345678');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
-          .and('contain', 'The email has already been taken.');
+        registerPage.validationRegisterPage.should('be.visible')
+          .and('contain', validationMsg.msgEmailUsed);
 
     });
 
@@ -121,8 +112,8 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('1234567');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
-          .and('contain', 'The password confirmation does not match.');
+        registerPage.validationRegisterPage.should('be.visible')
+          .and('contain', validationMsg.msgPassMatch);
 
     });
 
@@ -134,8 +125,8 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('1234567');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
-          .and('contain', 'The password must be at least 8 characters.');
+        registerPage.validationRegisterPage.should('be.visible')
+          .and('contain', validationMsg.msgShortPass);
 
     });
 
@@ -147,15 +138,15 @@ describe('registration test', () => {
         cy.get('#password-confirmation').type('asdfghjk');
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
-        cy.get('p[class="alert alert-danger"]').should('be.visible')
-          .and('contain', 'The password format is invalid.');
+        registerPage.validationRegisterPage.should('be.visible')
+          .and('contain', validationMsg.msgPassFormat);
 
     });
 
     it('register with valid credentials', () => {
         cy.register(firstName, lastName, password);
         cy.get('a[role="button "]').should('be.visible');
-        cy.get('#navbarTogglerDemo01').should('not.contain', 'Register'); 
+        registerPage.navTogglerSelector.should('not.contain', 'Register'); 
 
     });
 

@@ -1,0 +1,18 @@
+{
+    "validationMsg": {
+        "msgEmailValid" : "The email must be a valid email address.",
+        "msgEmailUsed" : "The email has already been taken.",
+        "msgShortPass" : "The password must be at least 8 characters.",
+        "msgPassMatch" : "The password confirmation does not match.",
+        "msgPassFormat" : "The password format is invalid.",
+        "msgTerms" : "The terms and conditions must be accepted.",
+        "msgReqFirstName" : "The first name field is required.",
+        "msgReqLastName" : "The last name field is required.",
+        "msgPassFieldReg" : "The password field is required.",
+        "msgBadCredentials" : "Bad Credentials",
+        "msgTitleLessChart" : "The title must be at least 2 characters.",
+        "msgTitleMoreChart" : "The title may not be greater than 255 characters.",
+        "msgDescriptionMoreChart" : "The description may not be greater than 1000 characters.",
+        "msgWrongImgFormat" : "Wrong format of image"
+    }
+}

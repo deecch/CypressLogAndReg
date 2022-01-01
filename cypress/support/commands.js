@@ -33,3 +33,26 @@ Cypress.Commands.add('register', (firstName, lastName, password) => {
         cy.get('input[type="checkbox"]').click();
         cy.contains('Submit').click();
   });
+
+  Cypress.Commands.add('loginViaBackend', () => {
+      cy.request({
+            method: "POST",
+            url: 'https://gallery-api.vivifyideas.com/api/auth/login',
+            body: {
+                  email: Cypress.env('validUserMail'),
+                  password: Cypress.env('validUserPass')
+            }
+      }).its('body').then((response) => {
+            window.localStorage.setItem('token', response.access_token)
+      })
+  })
+
+  Cypress.Commands.add('logout', (token) => {
+        cy.request({
+            method: "POST",
+            url: "https://gallery-api.vivifyideas.com/api/auth/logout",
+            headers: {
+                          authorization: 'bearer ' + token
+                      }
+        })
+  })
